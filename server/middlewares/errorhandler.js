@@ -1,6 +1,5 @@
-exports.errorHandler = (error, req, res, next) => {
-    // console.log(error, "errorHandler");
-    
+exports.errorhandler = (error, req, res, next) => {
+    // console.log(error, "errorHandler");    
     switch (error.name) {
         case "SequelizeValidationError":
         case "SequelizeUniqueConstraintError":
