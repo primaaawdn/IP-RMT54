@@ -4,7 +4,6 @@ const { signToken } = require("../helpers/jwt");
 const { OAuth2Client } = require("google-auth-library");
 
 exports.register = async (req, res, next) => {
-	// console.log(req.body);
 	const { username, email, password } = req.body;
 
 	try {
@@ -26,7 +25,6 @@ exports.register = async (req, res, next) => {
 exports.login = async (req, res, next) => {
 	try {
 		const { email, password } = req.body;
-		// console.log(password, "login user controller");
 
 		if (!email) {
 			next({ name: "BadRequest", message: `Email is required` });
@@ -53,10 +51,8 @@ exports.login = async (req, res, next) => {
 		}
 
 		const access_token = signToken({ id: user.id });
-		// console.log("Generated access token:", access_token);
 		res.status(200).json({ access_token });
 	} catch (error) {
-		// console.error(error);
 		next(error);
 	}
 };
@@ -94,9 +90,11 @@ exports.googleLogin = async (req, res, next) => {
 
 exports.getUserById = async (req, res, next) => {
 	try {
-		const id = parseInt(req.params.id);
-		const user = await User.findByPk(id);
-		res.status(200).json(user);
+		const user = await User.findByPk(req.user.id);
+		if (!user) {
+			return res.status(404).json({ message: "User not found" });
+		  }
+		  res.status(200).json({ data: user });
 	} catch (error) {
 		next(error);
 	}
